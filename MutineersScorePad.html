@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Mutineers Photo Judging</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+    }
+
+    /* Title */
+    h1 {
+        margin: 10px 0 5px 0;
+        font-size: 3.2em;
+        color: #990000;
+        font-weight: bold;
+    }
+
+    /* Submit container (centres the button) */
+    #submitContainer {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+
+    /* Submit button */
+    #submitButton {
+        background: #990000;
+        color: white;
+        border: none;
+        width: 48%;
+        height: 19.25vw; /* 10% shorter */
+        font-size: 2.4em;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #submitButton:active {
+        background: #bb0000;
+    }
+
+    /* Voting container */
+    #voting {
+        width: 95vw;
+        margin: 0 auto;
+        padding: 5px;
+    }
+
+    /* Top bar (Image + Score) */
+    #topBar {
+        display: flex;
+        justify-content: center;
+        gap: 4%;
+        margin-bottom: 10px;
+        width: 100%;
+    }
+
+    .infoBox {
+        border: 2px solid #999;
+        border-radius: 8px;
+        width: 48%;
+        height: 14.25vw; /* half height */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.2em;
+        font-weight: bold;
+    }
+
+    #imageNumber {
+        color: #008000;
+    }
+
+    #scoreDisplay {
+        color: #cc5500;
+    }
+
+    /* Keypad */
+    #keypad {
+        width: 100%;
+        margin-top: 5px;
+    }
+
+    .keyRow {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 4px; /* reduced from 8px to remove gap */
+    }
+
+    .keyBtn {
+        width: 30%;
+        height: 27.075vw; /* 5% smaller */
+        font-size: 3.0em;
+        border-radius: 12px;
+        background: #e0e0e0;
+        border: 2px solid #999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .keyBtn:active {
+        background: #ccc;
+    }
+
+    /* Back + Next buttons */
+    .navBtn {
+        width: 48%;
+        height: 27.075vw; /* match number buttons */
+        font-size: 2.4em;
+        border-radius: 12px;
+        background: #d0d0d0;
+        border: 2px solid #777;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .navBtn:active {
+        background: #bbb;
+    }
+
+    /* Summary table */
+    table {
+        border-collapse: collapse;
+        margin: 0 auto;
+        margin-top: 20px;
+    }
+
+    th, td {
+        border: 1px solid #ccc;
+        padding: 6px 10px;
+    }
+</style>
+</head>
+
+<body>
+
+<h1>Mutineers Photo Judging</h1>
+
+<div id="submitContainer">
+    <button id="submitButton" onclick="submitVotes()">Submit</button>
+</div>
+
+<!-- VOTING SCREEN -->
+<div id="voting">
+
+    <!-- Image + Score -->
+    <div id="topBar">
+        <div class="infoBox" id="imageNumber">Image 1</div>
+        <div class="infoBox" id="scoreDisplay">Score –</div>
+    </div>
+
+    <!-- Keypad -->
+    <div id="keypad">
+        <div class="keyRow">
+            <button class="keyBtn" onclick="pressNum(1)">1</button>
+            <button class="keyBtn" onclick="pressNum(2)">2</button>
+            <button class="keyBtn" onclick="pressNum(3)">3</button>
+        </div>
+        <div class="keyRow">
+            <button class="keyBtn" onclick="pressNum(4)">4</button>
+            <button class="keyBtn" onclick="pressNum(5)">5</button>
+            <button class="keyBtn" onclick="pressNum(6)">6</button>
+        </div>
+        <div class="keyRow">
+            <button class="keyBtn" onclick="pressNum(7)">7</button>
+            <button class="keyBtn" onclick="pressNum(8)">8</button>
+            <button class="keyBtn" onclick="pressNum(9)">9</button>
+        </div>
+        <div class="keyRow">
+            <button class="keyBtn" onclick="pressNum(0)">0</button>
+            <button class="keyBtn" onclick="clearScore()">Clear</button>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div style="display:flex; justify-content:space-between; margin-top:10px;">
+        <button class="navBtn" onclick="goBack()">Back</button>
+        <button class="navBtn" onclick="saveAndNext()">Next</button>
+    </div>
+
+</div>
+
+<!-- SUMMARY SCREEN -->
+<div id="summary" style="display:none;">
+    <h2>Competition Submitted</h2>
+    <p>Your scores are saved on this device.</p>
+
+    <table id="summaryTable">
+        <thead>
+            <tr><th>Image</th><th>Score</th></tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script>
+    let totalImages = 60;
+    let currentImage = 1;
+    let scores = new Array(totalImages).fill(null);
+
+    function updateTopBar() {
+        document.getElementById('imageNumber').textContent = "Image " + currentImage;
+        const s = scores[currentImage - 1];
+        document.getElementById('scoreDisplay').textContent = "Score " + (s === null ? "–" : s);
+    }
+
+    function pressNum(n) {
+        let current = scores[currentImage - 1];
+        if (current === null) current = "";
+
+        if (current.length >= 2) return;
+
+        let newVal = current + n;
+        let num = parseInt(newVal);
+
+        if (num > 20) {
+            alert("Score must be between 0 and 20.");
+            return;
+        }
+
+        scores[currentImage - 1] = newVal;
+        updateTopBar();
+    }
+
+    function clearScore() {
+        scores[currentImage - 1] = null;
+        updateTopBar();
+    }
+
+    function goBack() {
+        if (currentImage === 1) {
+            alert("Already at the first image.");
+            return;
+        }
+        currentImage--;
+        updateTopBar();
+    }
+
+    function saveAndNext() {
+        if (currentImage === totalImages) {
+            alert("This is the last image.");
+            return;
+        }
+        currentImage++;
+        updateTopBar();
+    }
+
+    function submitVotes() {
+        const tbody = document.querySelector("#summaryTable tbody");
+        tbody.innerHTML = "";
+
+        for (let i = 0; i < totalImages; i++) {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `<td>${i + 1}</td><td>${scores[i] === null ? "–" : scores[i]}</td>`;
+            tbody.appendChild(tr);
+        }
+
+        document.getElementById('voting').style.display = 'none';
+        document.getElementById('summary').style.display = 'block';
+    }
+
+    updateTopBar();
+</script>
+
+</body>
+</html>
