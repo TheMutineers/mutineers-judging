@@ -10,17 +10,16 @@
         margin: 0;
         padding: 0;
         height: 100%;
-        overflow: hidden; /* No scrolling on voting screen */
+        overflow: hidden;
         font-family: Arial, sans-serif;
         text-align: center;
     }
 
-    /* Full-screen app container */
+    /* Full-screen container */
     #app {
-        height: 100vh;              /* Exactly the phone height */
+        height: 100vh;
         display: flex;
         flex-direction: column;
-        justify-content: flex-start;
         padding: 8px;
         box-sizing: border-box;
     }
@@ -28,7 +27,7 @@
     /* Title */
     h1 {
         margin: 0 0 6px 0;
-        font-size: 2.6em;
+        font-size: 2.4em;
         color: #990000;
         font-weight: bold;
     }
@@ -39,16 +38,12 @@
         color: white;
         border: none;
         width: 100%;
-        height: 10vh;
-        font-size: 2em;
+        height: 9vh;
+        font-size: 1.8em;
         border-radius: 12px;
     }
 
-    #submitButton:active {
-        background: #bb0000;
-    }
-
-    /* Voting area fills the rest */
+    /* Voting area */
     #voting {
         flex: 1;
         display: flex;
@@ -56,7 +51,7 @@
         margin-top: 6px;
     }
 
-    /* Top bar (Image + Score) */
+    /* Top bar */
     #topBar {
         display: flex;
         justify-content: space-between;
@@ -67,23 +62,18 @@
         border: 2px solid #999;
         border-radius: 8px;
         width: 48%;
-        height: 8vh;
+        height: 7vh;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.8em;
+        font-size: 1.6em;
         font-weight: bold;
     }
 
-    #imageNumber {
-        color: #008000;
-    }
+    #imageNumber { color: #008000; }
+    #scoreDisplay { color: #cc5500; }
 
-    #scoreDisplay {
-        color: #cc5500;
-    }
-
-    /* Keypad uses remaining space */
+    /* Keypad grid — SHRUNK */
     #keypad {
         flex: 1;
         display: grid;
@@ -94,7 +84,7 @@
     }
 
     .keyBtn {
-        font-size: 2.4em;
+        font-size: 2em;       /* smaller */
         border-radius: 12px;
         background: #e0e0e0;
         border: 2px solid #999;
@@ -103,21 +93,17 @@
         justify-content: center;
     }
 
-    .keyBtn:active {
-        background: #ccc;
-    }
-
-    /* Navigation buttons at bottom */
+    /* Navigation buttons — now fully visible */
     #navRow {
         display: flex;
         justify-content: space-between;
         gap: 6px;
-        height: 10vh;
+        height: 9vh;
     }
 
     .navBtn {
         width: 50%;
-        font-size: 2em;
+        font-size: 1.8em;
         border-radius: 12px;
         background: #d0d0d0;
         border: 2px solid #777;
@@ -126,11 +112,7 @@
         justify-content: center;
     }
 
-    .navBtn:active {
-        background: #bbb;
-    }
-
-    /* Summary screen (can scroll) */
+    /* Summary screen */
     #summary {
         display: none;
         height: 100vh;
@@ -159,16 +141,13 @@
 
     <button id="submitButton" onclick="submitVotes()">Submit</button>
 
-    <!-- VOTING SCREEN -->
     <div id="voting">
 
-        <!-- Image + Score -->
         <div id="topBar">
             <div class="infoBox" id="imageNumber">Image 1</div>
             <div class="infoBox" id="scoreDisplay">Score –</div>
         </div>
 
-        <!-- Keypad -->
         <div id="keypad">
             <button class="keyBtn" onclick="pressNum(1)">1</button>
             <button class="keyBtn" onclick="pressNum(2)">2</button>
@@ -184,10 +163,8 @@
 
             <button class="keyBtn" onclick="pressNum(0)">0</button>
             <button class="keyBtn" onclick="clearScore()">Clear</button>
-            <!-- third cell in this row will stay empty but keeps grid shape -->
         </div>
 
-        <!-- Navigation -->
         <div id="navRow">
             <button class="navBtn" onclick="goBack()">Back</button>
             <button class="navBtn" onclick="saveAndNext()">Next</button>
@@ -197,7 +174,6 @@
 
 </div>
 
-<!-- SUMMARY SCREEN -->
 <div id="summary">
     <h2>Competition Submitted</h2>
     <p>Your scores are saved on this device.</p>
